@@ -1,0 +1,86 @@
+[
+  {
+    "folder": "01_LED_Blink",
+    "title": "01 LED 閃爍／P0 位元操作",
+    "watch": "led、blink_count",
+    "wiring": "觀察板上P0.0；外接LED須串限流電阻，電壓須符合板卡規格。",
+    "expected": "P0.0 在0與1之間交替；LED亮滅極性依板卡接法。"
+  },
+  {
+    "folder": "02_Running_Light",
+    "title": "02 八位跑馬燈／循環位移",
+    "watch": "pattern、shifts",
+    "wiring": "觀察P0.0..P0.7的LED。",
+    "expected": "P0依序01、02、04、08、10、20、40、80，再回01。"
+  },
+  {
+    "folder": "03_P0_Counter_UART",
+    "title": "03 P0 加1後傳送 UART",
+    "watch": "p0_value、uart_value、uart_count",
+    "wiring": "TX=P3.6；可接相容邏輯電位UART接收器，GND共地；P3.6接P3.7可回送。",
+    "expected": "P0與UART原始byte皆為01..FF、00循環；115200、8-N-1。"
+  },
+  {
+    "folder": "04_Key_Debounce",
+    "title": "04 按鍵輸入／20ms 去彈跳",
+    "watch": "presses、stable_key、milliseconds",
+    "wiring": "P3.2按鍵接GND，使用板上／外部上拉；P3.2已啟用FPGA弱上拉。",
+    "expected": "連續低電位約20ms視為按下，一次按住只加1，放開穩定後可再次計數。"
+  },
+  {
+    "folder": "05_Timer0_Poll",
+    "title": "05 Timer0 mode1 輪詢計時",
+    "watch": "ticks、led",
+    "wiring": "P0.0 LED；無額外訊號線。",
+    "expected": "Timer0每次約10ms溢位；每50次反轉P0.0。"
+  },
+  {
+    "folder": "06_Dual_Timer_IRQ",
+    "title": "06 Timer0／1 自動重載中斷",
+    "watch": "timer0_hits、timer1_hits、heartbeat",
+    "wiring": "P0.0/P0.1 LED；無額外訊號線。",
+    "expected": "T0約1ms、T1約2ms中斷；P0.0約0.5秒翻轉、P0.1約1秒翻轉。"
+  },
+  {
+    "folder": "07_External_Counter",
+    "title": "07 T0 外部下降緣計數",
+    "watch": "count",
+    "wiring": "T0=P3.4接外部脈波，訊號GND共地，使用相容電位；預設弱上拉。",
+    "expected": "每個同步後下降緣加1，P0顯示低8位，16位計數溢位回0。"
+  },
+  {
+    "folder": "08_INT_Priority",
+    "title": "08 INT0／INT1 與兩級優先序",
+    "watch": "int0_hits、int1_hits、last_source、heartbeat",
+    "wiring": "INT0=P3.2、INT1=P3.3，可用按鍵接GND或外部訊號；均有弱上拉。",
+    "expected": "INT0更新P0低4位，INT1更新高4位；同時pending時INT1先服務。"
+  },
+  {
+    "folder": "09_UART_Echo",
+    "title": "09 UART 接收與回送",
+    "watch": "received、echo_count",
+    "wiring": "先移除P3.6/P3.7短接線；外部UART TX接P3.7、RX接P3.6、GND共地。",
+    "expected": "115200、8-N-1，外部送一個byte，P0顯示並回送同一byte。"
+  },
+  {
+    "folder": "10_Timer1_UART_Baud",
+    "title": "10 Timer1 產生 UART 鮑率",
+    "watch": "messages",
+    "wiring": "P3.6接UART接收器，GND共地；接收端需支援自訂15625 baud。",
+    "expected": "每輪送出Hello 8051 -> RISC-V!與換行；P0顯示訊息次數。"
+  },
+  {
+    "folder": "11_Mode3_Split",
+    "title": "11 Mode3 分拆兩個8位 Timer",
+    "watch": "tl0_overflows、th0_overflows",
+    "wiring": "P0八位LED；不需額外接線。",
+    "expected": "TL0首次約256ms溢位；TH0首次約128ms溢位，之後兩者各256ms。P0低／高4位分別顯示次數。"
+  },
+  {
+    "folder": "12_UART_Loopback_Test",
+    "title": "12 UART 256-byte 實體迴路自測",
+    "watch": "pass_count、error_count、done、tx_value、rx_value",
+    "wiring": "將P3.6（TX）接P3.7（RX），移除這兩腳的其他訊號輸出。",
+    "expected": "測試00..FF全部256個byte；成功為done=1、pass_count=256、error_count=0。"
+  }
+]
